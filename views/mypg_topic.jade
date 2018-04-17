@@ -1,0 +1,46 @@
+doctype html
+html
+  head
+    meta(charset='utf8')
+    title main page
+    link( rel='stylesheet' type='text/css' href='/mainstyle.css')
+  body
+    div(class='container')
+      header(class='container_header')
+        h1(class='container_header_h1')
+          a(href='/main' class='container_header_h1_a') 게시판
+          div(class='container_header_div')
+
+      section(class='content_mypg')
+        if topic
+          each topi in topic
+            div(class='mypg_form')
+
+                h1 게시글 :
+                 a(href='/main/'+topi.id class='a_blue' )= topi.title
+                br
+                div= topi.description
+        if text
+            each tex in text
+              div(class='mypg_form')
+
+
+                    a(href="/main/"+tex.title_id class='a_blue')=tex.user_name
+                    div(class='main_div_div1')=tex.description_texts
+                    div(class='main_div_divtime')=tex.nowtime
+        if sym
+          each sy in sym
+
+
+                div(class='mypg_form')
+                  each symtex in symtext
+                    if symtex.id==sy.comment_id
+
+                        a(href="/main/"+symtex.title_id class='a_blue')=symtex.user_name
+                        div= symtex.description_texts
+                        div(class='main_div_divtime')=symtex.nowtime
+
+
+
+
+      main(class='main_from')

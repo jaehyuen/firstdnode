@@ -1,0 +1,44 @@
+doctype html
+html
+  head
+    meta(charset='utf8')
+    title edit page
+    link( rel='stylesheet' type='text/css' href='/mainstyle.css')
+  body
+    div(class='container')
+      header(class='container_header')
+        h1(class='container_header_h1')
+          a(href='/main'  class='container_header_h1_a') 게시판
+          div(class='container_header_div')
+            a(href='/post/new' class='container_header_h1_a_1') new
+            if displayname=='login'
+              a(href='/user/login' class='container_header_h1_a_1')= displayname
+            else
+             a(class='container_header_h1_a_12')= displayname
+      section(class='content')
+          div(class='nav_form')
+            nav(class='content_nav')
+              p(class='content_nav_p')
+                each topi in topic
+                  a(href='/main/'+topi.id  class='content_nav_p_a')= topi.title
+                      br
+          main(class='main_from')
+
+
+            form(action='/post/'+top.id+'/edit' method='post')
+              div(class='main_form_div')
+                p
+                  input(type='text' name='title' placeholder='제목' class='text' value=top.title)
+                p
+                  textarea(name='description' placeholder='내용' class='text')=top.description
+
+                p
+                  input(type='submit' value='수정')
+
+          div(class='slide')
+              ul(class='hide')
+                div(class='hh')
+                  li(class='slide_li')
+                    a(href='/user/logout' class='content_nav_p_a1') logout
+                  li(class='slide_li')
+                    a(href='/mypg' class='content_nav_p_a1') mypage

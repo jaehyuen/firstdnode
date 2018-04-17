@@ -1,0 +1,15 @@
+var socket=io();
+$('.chat').on(submit,(e)=>{
+  socket.emit('send message',$('.name'),var(),$('.message').val());
+  $('.message').val('');
+  $('.message').focus();
+  e.preventDefault();
+});
+socket.on('receive message',(msg)=>{
+  $('.chatlog').append(msg+'\n');
+  $('.chatlog').scrollTop($('.chatlog')[0].scrollHeight);
+});
+
+socket.on('change name',(name)=>{
+  $('.name').val(name);
+});

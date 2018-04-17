@@ -1,0 +1,36 @@
+doctype html
+html
+  head
+    meta(charset='utf8')
+    title main page
+    link( rel='stylesheet' type='text/css' href='/mainstyle.css')
+  body
+    div(class='container')
+      header(class='container_header')
+        h1(class='container_header_h1')
+          a(href='/main' class='container_header_h1_a') 게시판
+          div(class='container_header_div')
+
+      section(class='content_mypg')
+
+          div(class='mypg_form')= displayname+'님의 게시글 수 : '+topic.length
+            br
+            if topic.length==0
+              a(href='/mypg/err' class='a_blue') 보러가기
+            else
+              a(href='/mypg/topic' class='a_blue') 보러가기
+
+          div(class='mypg_form')= displayname+'님의 댓글 수 : '+text.length
+            br
+            if text.length==0
+              a(href='/mypg/err' class='a_blue') 보러가기
+            else
+              a(href='/mypg/text' class='a_blue') 보러가기
+
+          div(class='mypg_form')= displayname+'님이 좋아요한 댓글 수 : '+sym.length
+            br
+            if sym.length==0
+              a(href='/mypg/err' class='a_blue') 보러가기
+            else
+              a(href='/mypg/sym' class='a_blue') 보러가기
+      main(class='main_from')

@@ -1,0 +1,72 @@
+doctype html
+html
+  head
+    meta(charset='utf8')
+    title main page
+    link( rel='stylesheet' type='text/css' href='/mainstyle.css')
+  body
+    div(class='container')
+      header(class='container_header')
+        h1(class='container_header_h1')
+          a(href='/main' class='container_header_h1_a') 게시판
+          div(class='container_header_div')
+            a(href='/post/new' class='container_header_h1_a_1') new
+            if displayname=='login'
+              a(href='/user/login' class='container_header_h1_a_1')= displayname
+            else
+              a(class='container_header_h1_a_12')= displayname
+      section(class='content')
+          div(class='nav_form')
+            nav(class='content_nav')
+              p(class='content_nav_p')
+                each topi in topic
+                  a(href='/main/'+topi.id class='content_nav_p_a')= topi.title
+                    br
+          main(class='main_from')
+
+             if top
+                  div(class='main_div')
+                    h2(class='main_div_h2')=top.title
+                    = top.description
+                    div(class='main_div_div')= 'by '+top.author
+
+
+                if text
+
+                              div(class='main_div_bottom_1')
+                                each tex in text
+                                  div(class='main_text_form')
+                                    div(class='main_div_div_text')
+                                      div(class='main_div_div1')=tex.user_name
+                                      div(class='main_div_div1')=tex.description_texts
+
+                                    div(class='main_text')
+                              if displayname=='login'
+                                   div(class='main_form_div')
+                              else
+                               form(action='/comment/'+title.id+'/ed' method='post')
+
+                                  div(class='main_form_div')
+                                     p
+                                      div(class='input_flex')= displayname
+
+                                     p
+                                      div(class='input_flex')
+
+                                       textarea(name='description' placeholder='description' class='text_db_textarea')= title.description_texts
+                                       input(type='hidden' name='title_id' value='#{top.id}')
+                                       input(type='submit' value='수정')
+                              div(class='main_div_bottom')
+             else
+                  div(class='main_div')
+                    h2(class='main_div_h2') Welcome
+                    | This is 게시판
+
+
+          div(class='slide')
+              ul(class='hide')
+                div(class='hh')
+                  li(class='slide_li')
+                    a(href='/user/logout' class='content_nav_p_a1') logout
+                  li(class='slide_li')
+                    a(href='/mypg' class='content_nav_p_a1') mypage

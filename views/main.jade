@@ -1,0 +1,167 @@
+doctype html
+html
+  head
+    meta(charset='utf8')
+    title main page
+    link( rel='stylesheet' type='text/css' href='/mainstyle.css')
+
+    script( type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')
+    script( type='text/javascript' src='/slide.js')
+    script( type='text/javascript' src='/socket.io/socket.io.js')
+
+
+
+  body
+    div(class='container')
+      header(class='container_header')
+        h1(class='container_header_h1')
+          a(href='/main' class='container_header_h1_a') 게시판
+          div(class='container_header_div')
+            a(href='/post/new' class='container_header_h1_a_1') new
+            if displayname=='login'
+              a(href='/user/login' class='container_header_h1_a_1')= displayname
+            else
+              a(class='container_header_h1_a_12')= displayname
+
+      section(class='content')
+          div(class='nav_form')
+            nav(class='content_nav')
+              p(class='content_nav_p')
+                each topi in topic
+                  a(href='/main/'+topi.id class='content_nav_p_a')= topi.title
+                    br
+          main(class='main_from')
+
+             if top
+                  div(class='main_div')
+                    h2(class='main_div_h2')=top.title
+                    = top.description
+                    div(class='main_div_div')= 'by '+top.author
+
+
+                if text
+
+                          div(class='main_div_bottom_1')
+
+                              each tex in text
+
+
+
+                                div(class='main_text_form')
+                                  div(class='main_div_div_text')
+                                    div(class='main_div_div1')=tex.user_name
+                                    div(class='main_div_div1')=tex.description_texts
+                                    div(class='main_div_divtime')=tex.nowtime
+
+                                   if displayname=='login'
+                                        div(class='main_text')
+                                          a(href='/user/err' class='main_text_form_input') 수정
+                                          a(href='/user/err' class='main_text_form_input') 삭제
+                                          a(href='/user/err' class='main_text_form_input')= tex.sym_count+'♡'
+                                    else
+                                        div(class='main_text')
+
+
+                                          a(href='/comment/'+tex.id+'/'+tex.title_id+'/ed' class='main_text_form_input') 수정
+                                          a(href='/comment/'+tex.id+'/'+tex.title_id+'/del' class='main_text_form_input') 삭제
+
+                                          a(href='/comment/'+tex.id+'/'+tex.title_id+'/sym' class='main_text_form_inputnsy')= tex.sym_count+'♡'
+                                            if sym
+                                              each sy in sym
+                                                             if tex.id==sy.comment_id&&sy.user_sym==true
+                                                               div(class='main_text_form_inputsy') 좋아
+
+                                          //  if sym
+                                          //        if tex.sym_count>0
+
+
+                                          //              each sy in sym
+                                          //                if tex.id==sy.comment_id&&sy.user_sym==true
+                                          //                  a(href='/comment/'+tex.id+'/'+tex.title_id+'/sym' class='main_text_form_inputsy')= tex.sym_count+'♡'
+                                          //                else if tex.id==sy.comment_id&&sy.user_sym==false
+                                          //                  a(href='/comment/'+tex.id+'/'+tex.title_id+'/sym' class='main_text_form_inputnsy')= tex.sym_count+'♡'
+
+                                          //        else
+                                            //          a(href='/comment/'+tex.id+'/'+tex.title_id+'/sym' class='main_text_form_inputnsy')= tex.sym_count+'♡'
+                                          //  else
+                                              //a(href='/comment/'+tex.id+'/'+tex.title_id+'/sym' class='main_text_form_inputnsy')= tex.sym_count+'♡'
+
+
+
+
+
+
+
+                          if displayname=='login'
+                            div(class='main_form_div')
+                          else
+                           form(action='/comment/new' method='post')
+
+                              div(class='main_form_div')
+                                 p
+                                  div(class='input_flex')= displayname
+
+                                 p
+                                  div(class='input_flex')
+
+                                   textarea(name='description' placeholder='description' class='text_db_textarea')
+                                   input(type='hidden' name='id' value='#{top.id}')
+                                   input(type='submit' value='등록')
+
+
+                          div(class='main_div_bottom')
+                            if displayname=='login'
+                              a(href='/user/err' class='main_div_a') 글 수정
+                              a(href='/user/err' class='main_div_a') 글 삭제
+                            else
+                              a(href='/post/'+top.id+'/edit' class='main_div_a') 글 수정
+                              a(href='/post/'+top.id+'/delete' class='main_div_a') 글 삭제
+
+
+
+             else
+                  div(class='main_div')
+                    h2(class='main_div_h2') Welcome
+                    | This is 게시판
+
+          div(class='slide')
+              ul(class='hide')
+                div(class='hh')
+                  li(class='slide_li')
+                    a(href='/user/logout' class='content_nav_p_a1') logout
+                  li(class='slide_li')
+                    a(href='/mypg' class='content_nav_p_a1') mypage
+                  li(class='slide_li')
+                    a( class='container_header_h1_a_12_chat') 채팅
+
+          div(class='slide_div_div')
+            div(class='slide_div')
+              div(class='slide_div_div1')
+
+                p
+                  textarea(id='chatLog' class='chat_log' readonly)
+
+                p
+                  input(id='name' class='name' type='text' readonly)
+                p
+                  input(id='message' class='message' type='text')
+                p
+                  div.a
+                    button(id='chat') 전송
+                    a(class='container_header_h1_a_12_can') 닫기
+
+            script.
+                var socket=io();
+                  $('#chat').on('click',function(){
+                  socket.emit('send message',$('#name').val(), $('#message').val());
+                  $('#message').val('');
+                   $('#message').focus();
+                  });
+
+                  socket.on('change name', function(name){
+                    $('#name').val(name);
+                    });
+
+                  socket.on('message', function(msg){
+                     $('#chatLog').append(msg+'\n');
+                    });
