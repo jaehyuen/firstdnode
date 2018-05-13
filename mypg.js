@@ -2,6 +2,7 @@ var express=require('express');
 var session=require('express-session');
 var bodyParser = require('body-parser');
 require('date-utils');
+var multer  = require('multer');
 var app=express();
 var router=express.Router();
 var mysql      = require('mysql');
@@ -11,6 +12,16 @@ var conn = mysql.createConnection({
   password : 'root',
   database : 'o2'
 });
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'data')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+});
+var upload = multer({ storage: storage });
 //app.use(bodyParser.urlencoded({extended: false}));
 app.use(session({
   secret:'123qwe123qwe123qwe',

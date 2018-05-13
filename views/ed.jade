@@ -8,13 +8,29 @@ html
     div(class='container')
       header(class='container_header')
         h1(class='container_header_h1')
-          a(href='/main' class='container_header_h1_a') 게시판
+          a(href='/' class='container_header_h1_a') 블로그
           div(class='container_header_div')
             a(href='/post/new' class='container_header_h1_a_1') new
             if displayname=='login'
               a(href='/user/login' class='container_header_h1_a_1')= displayname
             else
               a(class='container_header_h1_a_12')= displayname
+
+      div(class='slide')
+                                  ul(class='hide')
+                                    div(class='hh')
+                                      li(class='slide_li')
+                                        a(href='/user/logout' class='content_nav_p_a1') logout
+                                      li(class='slide_li')
+                                        a(href='/mypg' class='content_nav_p_a1') mypage
+                                      li(class='slide_li')
+                                        a( class='container_header_h1_a_12_chat') 채팅
+
+      div(class='content2')
+                        a(href='/main' class='content2_a') 게시판
+                        a(href='/image' class='content2_a') 갤러리
+
+
       section(class='content')
           div(class='nav_form')
             nav(class='content_nav')

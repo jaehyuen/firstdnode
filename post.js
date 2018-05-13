@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var session=require('express-session');
 var app=express();
 require('date-utils');
+var multer  = require('multer');
 var newDate=new Date();
 var time=newDate.toFormat('YYYY-MM-DD HH24:MI:SS');
 var router=express.Router();
@@ -13,6 +14,16 @@ var conn = mysql.createConnection({
   password : 'root',
   database : 'o2'
 });
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'data')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+});
+var upload = multer({ storage: storage });
 app.use(session({
   secret:'123qwe123qwe123qwe',
   resave: false,
@@ -37,7 +48,7 @@ router.post('/:id/edit',(req,res)=>{
     });
 });
 
-router.post('/:id/delete',(req,res)=>{
+router.get('/:id/delete',(req,res)=>{
   var id=req.params.id;
   var sql="DELETE FROM topic WHERE id=?";
   conn.query(sql,[id],(err,results)=>{
@@ -94,45 +105,6 @@ router.get('/:id/edit',(req,res)=>{
     }
   });
 });
-
-router.get('/:id/delete',(req,res)=>{
-  var id=req.params.id;
-  if(req.session.displayname){
-    var displayname=req.session.displayname;
-  }
-  else {
-    var displayname='login';
-
-  }
-  var sql="SELECT id,title FROM topic";
-
-  conn.query(sql,(err,results,fields)=>{
-    var sql="SELECT * FROM topic WHERE id=?";
-    conn.query(sql,[id],(err,results2,fields)=>{
-      if (err) {
-        console.log(err);
-      }
-      else {
-        if (results2.length===0) {
-          console.log(err);
-        }
-        else {
-          if(req.session.displayname==results2[0].author){
-            res.render('delete',{topic:results, top:results2[0],displayname:displayname});
-          }
-          else {
-              res.send('<script>alert("자신만 가능");location.href="/main" ;</script>')
-          }
-
-
-
-        }
-      }
-    });
-
-
-  });
-  });
 
 router.get('/new',(req,res)=>{
   if(req.session.displayname){

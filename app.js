@@ -8,11 +8,21 @@ var post=require('./post.js');
 var user=require('./user.js');
 var comment=require('./comment.js');
 var mypg=require('./mypg.js');
+var img=require('./img');
 var http=require('http').Server(app);
 var io=require('socket.io')(http);
 require('date-utils');
 var newDate=new Date();
 var time=newDate.toFormat('YYYY-MM-DD HH24:MI:SS');
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'data')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+});
 app.use(session({
   secret:'123qwe123qwe123qwe',
   resave: false,
@@ -23,6 +33,7 @@ app.use('/post',post);
 app.use('/user',user);
 app.use('/comment',comment);
 app.use('/mypg',mypg);
+app.use('/img',img);
 app.use(express.static('style'));
 
 
@@ -37,10 +48,50 @@ var conn = mysql.createConnection({
   password : 'root',
   database : 'o2'
 });
+var upload = multer({ storage: storage });
+app.use('/static',express.static('img'));
 
 
 app.get('/',(req,res)=>{
-  res.redirect('/main');
+  if(req.session.displayname){
+    var displayname=req.session.displayname;
+  }
+  else {
+    var displayname='login';
+  }
+  res.render('blog',{displayname:displayname});
+});
+
+app.get(['/image','/image/:id'],(req,res)=>{
+  if(req.session.displayname){
+    var displayname=req.session.displayname;
+  }
+  else {
+    var displayname='login';
+  }
+  var id=req.params.id;
+  var sql='SELECT id,title,img_name FROM img';
+  conn.query(sql,(err,results1,fields)=>{
+    if(id){
+      var sql='SELECT * FROM img WHERE id=?';
+      conn.query(sql,[id],(err,results2,fields)=>{
+        if(err){
+          console.log(err);
+        }
+        else{
+          res.render('image',{displayname:displayname, topic:results1,top:results2[0]});
+        }
+      });
+    } else{
+      if(results1[0]!=null){
+        res.render('image',{displayname:displayname, topic:results1});
+      }
+      else{
+        res.render('image',{displayname:displayname});
+      }
+    }
+  });
+
 });
 
 app.get(['/main','/main/:id'],(req,res)=>{
@@ -76,7 +127,7 @@ app.get(['/main','/main/:id'],(req,res)=>{
                   if(results4[0]==null){
                     res.render('main',{topic:results,top:results2[0], text:results3, displayname:displayname});
                   }else{
-
+                    console.log(results2[0]);
                 res.render('main',{topic:results,top:results2[0], text:results3, displayname:displayname,sym:results4});
               }}
               });
@@ -98,19 +149,17 @@ app.get(['/main','/main/:id'],(req,res)=>{
 var usercount=1;
 io.on('connection',(socket)=>{
 
-  console.log('user connected'+socket.id);
   var name='user'+usercount++;
   io.to(socket.id).emit('change name',name);
 
   socket.on('disconnect',()=>{
     usercount--;
-    console.log('user disconnected',socket.id);
   });
 
   socket.on('send message',(name,text)=>{
 
     var msg=name+' : '+text;
-    console.log(msg);
+
     io.emit('message',msg);
   });
 });

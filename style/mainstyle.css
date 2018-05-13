@@ -84,9 +84,7 @@ textarea{
   padding: 15px;
 }
 .main_div_bottom{
-  display: flex;
-  flex-direction: column;
-  border: 2px solid #61656E;
+  text-align: right;
 
 }
 .main_div_div{
@@ -273,4 +271,42 @@ width: 120px;
 .a{
   display: flex;
   justify-content: space-around;
+}
+#delete_post{
+  cursor: pointer;
+}
+.main_text_form_input1{
+  width: 32px;
+}
+.content2{
+  display: flex;
+  justify-content: space-around;
+  height: 40px;
+  align-items: center;
+  background-color: #61656E;
+
+}
+.content2_a{
+flex: 1;
+text-align:center;
+color: white;
+padding: 10px;
+}
+.content2_a:hover{
+  background-color: #F9F9F9;
+  color: black;
+}
+.image{
+ width:150px;
+ padding:20px;
+ box-shadow: 5px 5px 10px #aaaaaa;
+ border:2px solid #61656E;
+ margin: 10px;
+ background-color: white;
+}
+.image:hover{
+  background-color: #CFCFCF;
+}
+.slide_div_div{
+  height: 350px;
 }

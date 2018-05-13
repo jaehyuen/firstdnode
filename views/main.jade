@@ -15,13 +15,28 @@ html
     div(class='container')
       header(class='container_header')
         h1(class='container_header_h1')
-          a(href='/main' class='container_header_h1_a') 게시판
+          a(href='/' class='container_header_h1_a') 블로그
           div(class='container_header_div')
             a(href='/post/new' class='container_header_h1_a_1') new
             if displayname=='login'
               a(href='/user/login' class='container_header_h1_a_1')= displayname
             else
               a(class='container_header_h1_a_12')= displayname
+
+     div(class='slide')
+                  ul(class='hide')
+                    div(class='hh')
+                      li(class='slide_li')
+                        a(href='/user/logout' class='content_nav_p_a1') logout
+                      li(class='slide_li')
+                        a(href='/mypg' class='content_nav_p_a1') mypage
+                      li(class='slide_li')
+                        a( class='container_header_h1_a_12_chat') 채팅
+
+      div(class='content2')
+        a(href='/main' class='content2_a') 게시판
+        a(href='/image' class='content2_a') 갤러리
+
 
       section(class='content')
           div(class='nav_form')
@@ -33,10 +48,22 @@ html
           main(class='main_from')
 
              if top
+              -var id=top.id
                   div(class='main_div')
                     h2(class='main_div_h2')=top.title
                     = top.description
                     div(class='main_div_div')= 'by '+top.author
+                    div(class='main_div_bottom')
+                      if displayname=='login'
+                        a(href='/user/err' class='main_div_a') 글 수정
+                        br
+                        a(href='/user/err' class='main_div_a') 글 삭제
+                      else
+                        if displayname==top.author
+                          a(href='/post/'+top.id+'/edit' class='main_div_a' id='edit_post') 글 수정
+                          br
+                          a( class='main_div_a' id='delete_post' onclick='delete_con(#{id})') 글 삭제
+                        else
 
 
                 if text
@@ -53,47 +80,28 @@ html
                                     div(class='main_div_div1')=tex.description_texts
                                     div(class='main_div_divtime')=tex.nowtime
 
-                                   if displayname=='login'
+                                   if displayname!=tex.user_name
                                         div(class='main_text')
-                                          a(href='/user/err' class='main_text_form_input') 수정
-                                          a(href='/user/err' class='main_text_form_input') 삭제
-                                          a(href='/user/err' class='main_text_form_input')= tex.sym_count+'♡'
+
+                                          a(href='/user/err' class='main_text_form_input1')= tex.sym_count+'♡'
                                     else
                                         div(class='main_text')
 
-
-                                          a(href='/comment/'+tex.id+'/'+tex.title_id+'/ed' class='main_text_form_input') 수정
-                                          a(href='/comment/'+tex.id+'/'+tex.title_id+'/del' class='main_text_form_input') 삭제
-
                                           a(href='/comment/'+tex.id+'/'+tex.title_id+'/sym' class='main_text_form_inputnsy')= tex.sym_count+'♡'
+                                          a(href='/comment/'+tex.id+'/'+tex.title_id+'/ed' class='main_text_form_input') 수정
+                                          a(id='delete_post' class='main_text_form_input' onclick='delete_comment_con(#{tex.id},#{tex.title_id})') 삭제
+
+
                                             if sym
                                               each sy in sym
                                                              if tex.id==sy.comment_id&&sy.user_sym==true
                                                                div(class='main_text_form_inputsy') 좋아
 
-                                          //  if sym
-                                          //        if tex.sym_count>0
-
-
-                                          //              each sy in sym
-                                          //                if tex.id==sy.comment_id&&sy.user_sym==true
-                                          //                  a(href='/comment/'+tex.id+'/'+tex.title_id+'/sym' class='main_text_form_inputsy')= tex.sym_count+'♡'
-                                          //                else if tex.id==sy.comment_id&&sy.user_sym==false
-                                          //                  a(href='/comment/'+tex.id+'/'+tex.title_id+'/sym' class='main_text_form_inputnsy')= tex.sym_count+'♡'
-
-                                          //        else
-                                            //          a(href='/comment/'+tex.id+'/'+tex.title_id+'/sym' class='main_text_form_inputnsy')= tex.sym_count+'♡'
-                                          //  else
-                                              //a(href='/comment/'+tex.id+'/'+tex.title_id+'/sym' class='main_text_form_inputnsy')= tex.sym_count+'♡'
-
-
-
-
 
 
 
                           if displayname=='login'
-                            div(class='main_form_div')
+
                           else
                            form(action='/comment/new' method='post')
 
@@ -109,13 +117,8 @@ html
                                    input(type='submit' value='등록')
 
 
-                          div(class='main_div_bottom')
-                            if displayname=='login'
-                              a(href='/user/err' class='main_div_a') 글 수정
-                              a(href='/user/err' class='main_div_a') 글 삭제
-                            else
-                              a(href='/post/'+top.id+'/edit' class='main_div_a') 글 수정
-                              a(href='/post/'+top.id+'/delete' class='main_div_a') 글 삭제
+
+
 
 
 
@@ -124,15 +127,7 @@ html
                     h2(class='main_div_h2') Welcome
                     | This is 게시판
 
-          div(class='slide')
-              ul(class='hide')
-                div(class='hh')
-                  li(class='slide_li')
-                    a(href='/user/logout' class='content_nav_p_a1') logout
-                  li(class='slide_li')
-                    a(href='/mypg' class='content_nav_p_a1') mypage
-                  li(class='slide_li')
-                    a( class='container_header_h1_a_12_chat') 채팅
+
 
           div(class='slide_div_div')
             div(class='slide_div')

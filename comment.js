@@ -1,6 +1,7 @@
 var express=require('express');
 var session=require('express-session');
 var bodyParser = require('body-parser');
+var multer  = require('multer');
 require('date-utils');
 var app=express();
 var router=express.Router();
@@ -11,6 +12,16 @@ var conn = mysql.createConnection({
   password : 'root',
   database : 'o2'
 });
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'data')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+});
+var upload = multer({ storage: storage });
 //app.use(bodyParser.urlencoded({extended: false}));
 app.use(session({
   secret:'123qwe123qwe123qwe',
@@ -39,29 +50,18 @@ router.post('/:id/ed',(req,res)=>{
 
     });
 
-router.post('/:id/del',(req,res)=>{
+router.get('/:id/:title_id/del',(req,res)=>{
 
       var id=req.params.id;
-      var title_id=req.body.title_id;
-      var user_passwords=req.body.user_password;
+      var title_id=req.params.title_id;
 
 
-      var sql="SELECT * FROM topic_text WHERE id=?";
-      conn.query(sql,[id],(err,results)=>{
-        var password=results[0].user_password;
-        if(password==user_passwords){
-
-          var sql="DELETE FROM topic_text WHERE id=?";
+        var sql="DELETE FROM topic_text WHERE id=?";
           conn.query(sql,[id],(err,results)=>{
             res.redirect('/main/'+title_id);
           });
-        }
-        else {
-          res.send('<script>alert("비번틀림");location.href="/comment/' + id + '/del";</script>')
 
 
-        }
-      });
 
     });
 
@@ -89,45 +89,45 @@ router.post('/new',(req,res)=>{
       });
     });
 
-router.get('/:title_id/:id/del',(req,res)=>{
-  if(req.session.displayname){
-    var displayname=req.session.displayname;
-    // var sym=1;
-  }
-  else {
-    var displayname='login';
-    // var sym=0;
-  }
-  var sql="SELECT id,title FROM topic";
-  var title_id=req.params.title_id;
-  var id=req.params.id;
-    var nickname=req.session.displayname;
-  conn.query(sql,(err,results,fields)=>{
-    var sql="SELECT * FROM topic_text WHERE id=?";
-    conn.query(sql,[title_id],(err,results2,fields)=>{
-      if (err) {
-        console.log(err);
-      }
-      else {
-        if (results2.length===0) {
-          console.log(err);
-        }
-        else {
-
-          if(results2[0].user_name==nickname){
-          res.render('del',{topic:results, top:results2[0],displayname:displayname});
-        }
-          else {
-              res.send('<script>alert("자신만가능");location.href="/main/' + id + '";</script>')
-
-        }
-        }
-      }
-    });
-
-
-  });
-  });
+// router.get('/:title_id/:id/del',(req,res)=>{
+//   if(req.session.displayname){
+//     var displayname=req.session.displayname;
+//     // var sym=1;
+//   }
+//   else {
+//     var displayname='login';
+//     // var sym=0;
+//   }
+//   var sql="SELECT id,title FROM topic";
+//   var title_id=req.params.title_id;
+//   var id=req.params.id;
+//     var nickname=req.session.displayname;
+//   conn.query(sql,(err,results,fields)=>{
+//     var sql="SELECT * FROM topic_text WHERE id=?";
+//     conn.query(sql,[title_id],(err,results2,fields)=>{
+//       if (err) {
+//         console.log(err);
+//       }
+//       else {
+//         if (results2.length===0) {
+//           console.log(err);
+//         }
+//         else {
+//
+//           if(results2[0].user_name==nickname){
+//           res.render('del',{topic:results, top:results2[0],displayname:displayname});
+//         }
+//           else {
+//               res.send('<script>alert("자신만가능");location.href="/main/' + id + '";</script>')
+//
+//         }
+//         }
+//       }
+//     });
+//
+//
+//   });
+//   });
 
 router.get('/:title_id/:id/ed',(req,res)=>{
   if(req.session.displayname){
