@@ -1,0 +1,76 @@
+doctype html
+html
+  head
+    meta(charset='utf8')
+    title main page
+    link( rel='stylesheet' type='text/css' href='/mainstyle.css')
+
+    script( type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js')
+    script( type='text/javascript' src='/slide.js')
+    script( type='text/javascript' src='/socket.io/socket.io.js')
+
+
+
+  body
+    div(class='container')
+      header(class='container_header')
+        h1(class='container_header_h1')
+          a(href='/' class='container_header_h1_a') 블로그
+          div(class='container_header_div')
+            a(href='/img/new' class='container_header_h1_a_1') new
+
+            if displayname=='login'
+              a(href='/user/login' class='container_header_h1_a_1')= displayname
+            else
+              a(class='container_header_h1_a_12')= displayname
+
+     div(class='slide')
+                  ul(class='hide')
+                    div(class='hh')
+                      li(class='slide_li')
+                        a(href='/user/logout' class='content_nav_p_a1') logout
+                      li(class='slide_li')
+                        a(href='/mypg' class='content_nav_p_a1') mypage
+                      li(class='slide_li')
+                        a( class='container_header_h1_a_12_chat') 채팅
+
+      div(class='content2')
+        a(href='/main' class='content2_a') 게시판
+        a(href='/image' class='content2_a') 갤러리
+      if topic
+        if top
+          section(class='content')
+            div(class='nav_form')
+              nav(class='content_nav')
+                p(class='content_nav_p')
+                  div
+                    span
+
+                              h1= top.title
+                              img(src='../static/'+top.img_name style='padding:20px;' align='middle' )
+                              div= 'by '+top.author
+                              if displayname==top.author
+
+                              a( class='main_div_a' id='delete_post' onclick='delete_img_con(#{top.id})') 글 삭제
+        else
+          section(class='content')
+            div(class='nav_form')
+              nav(class='content_nav')
+                p(class='content_nav_p')
+                  div
+                    span
+
+                        each topi in topic
+                            a(href='/image/'+topi.id)
+                              img(src='../static/'+topi.img_name class='image' align='middle' )
+
+
+
+
+      else
+       section(class='content')
+        div(class='nav_form')
+          nav(class='content_nav')
+            p(class='content_nav_p')
+              a(class='content_nav_p_a') 사진없음
+                 br
